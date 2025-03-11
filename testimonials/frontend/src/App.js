@@ -1,17 +1,18 @@
-import "./App.css";
-import { useEffect, useState } from "react";
-import axios from "axios";
-
+import React from "react";
+// import Button from "@mui/material/Button";
+import Login from "./pages/Login";
 function App() {
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000")
-      .then((response) => setMessage(response.data))
-      .catch((error) => console.error(error));
-  }, []);
-  return <h1>{message}</h1>;
+  return <Login />;
+  //  (
+  // <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+  //   <h1 className="text-3xl font-bold text-blue-600">
+  //     Hello, React + Tailwind + MUI! 🚀
+  //   </h1>
+  //   <Button variant="contained" color="primary" className="mt-4">
+  //     MUI Button
+  //   </Button>
+  // </div>
+  // );
 }
 
-export default App; 
+export default App;

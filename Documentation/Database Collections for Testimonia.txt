@@ -1,0 +1,336 @@
+--------------------------------------------
+Phase 1
+--------------------------------------------
+**Database Collections for Testimonial Collection & Embedding System**
+
+## **1. Introduction**
+The system uses **MongoDB Atlas** as its database, storing data in structured collections. Below is an overview of the collections required to support all system functionalities.
+
+## **2. Database Collections & Their Purpose**
+
+### **1. Users Collection**
+- Stores user information and authentication details.
+- Includes roles (admin/user) for access control.
+
+| Field Name  | Data Type  | Description  |
+|-------------|-----------|--------------|
+| _id         | ObjectId  | Unique user ID (auto-generated) |
+| name        | String    | Full name of the user |
+| email       | String    | User’s email (unique) |
+| password    | String    | Encrypted password |
+| role        | String    | 'user' or 'admin' |
+| createdAt   | Date      | Timestamp of user creation |
+
+### **2. Testimonials Collection**
+- Stores all testimonials submitted by users.
+- Includes status tracking (approved/pending/rejected).
+
+| Field Name   | Data Type  | Description  |
+|-------------|-----------|--------------|
+| _id         | ObjectId  | Unique testimonial ID (auto-generated) |
+| userId      | ObjectId  | References the user who submitted the testimonial |
+| content     | String    | Testimonial text |
+| mediaUrl    | String    | Optional URL for video/image |
+| rating      | Number    | Rating (1-5) |
+| category    | String    | Category under which testimonial falls |
+| tags        | Array     | Keywords for filtering |
+| status      | String    | 'pending', 'approved', 'rejected' |
+| createdAt   | Date      | Timestamp of submission |
+
+### **3. Widgets Collection**
+- Stores testimonial widgets created by users for embedding.
+- Includes customization settings.
+
+| Field Name   | Data Type  | Description  |
+|-------------|-----------|--------------|
+| _id         | ObjectId  | Unique widget ID (auto-generated) |
+| userId      | ObjectId  | References the user who created the widget |
+| testimonials | Array    | List of testimonial IDs displayed in the widget |
+| theme       | String    | 'light' or 'dark' |
+| layout      | String    | 'grid', 'carousel', 'list' |
+| createdAt   | Date      | Timestamp of widget creation |
+
+### **4. SocialMedia Collection**
+- Stores imported testimonials from social media.
+- Allows tracking of testimonial sources.
+
+| Field Name   | Data Type  | Description  |
+|-------------|-----------|--------------|
+| _id         | ObjectId  | Unique record ID (auto-generated) |
+| userId      | ObjectId  | References the user who imported testimonials |
+| platform    | String    | 'LinkedIn', 'Twitter', 'Google' |
+| importedTestimonials | Array | List of imported testimonial IDs |
+| createdAt   | Date      | Timestamp of import |
+
+### **5. Reports Collection** *(Optional)*
+- Stores analytics and testimonial engagement data.
+- Helps in performance tracking and reporting.
+
+| Field Name   | Data Type  | Description  |
+|-------------|-----------|--------------|
+| _id         | ObjectId  | Unique report ID |
+| userId      | ObjectId  | References the user |
+| widgetId    | ObjectId  | References the associated widget |
+| views       | Number    | Number of times testimonials were viewed |
+| shares      | Number    | Count of social media shares |
+| createdAt   | Date      | Timestamp of report creation |
+
+## **3. Conclusion**
+This database structure ensures efficient storage, retrieval, and management of user-generated testimonials, embedded widgets, and social media integrations. The **collections** are designed to support user roles, testimonial tracking, and customization for embedding widgets.
+
+
+
+--------------------------------------------
+Phase 2
+--------------------------------------------
+
+**Database Collections for Testimonial Collection & Embedding System**
+
+## **1. Introduction**
+The system uses **MongoDB Atlas** as its database, storing data in structured collections. Below is an overview of the collections required to support all system functionalities.
+
+## **2. Database Collections & Their Purpose**
+
+### **1. Users Collection**
+```json
+{
+  "_id": ObjectId,
+  "name": String,
+  "email": String,
+  "password": String,
+  "role": "user" | "admin",
+  "createdAt": Date
+}
+```
+
+### **2. Testimonials Collection**
+```json
+{
+  "_id": ObjectId,
+  "userId": ObjectId,
+  "content": String,
+  "mediaUrl": String,
+  "rating": Number,
+  "category": String,
+  "tags": [String],
+  "status": "pending" | "approved" | "rejected",
+  "createdAt": Date
+}
+```
+
+### **3. Widgets Collection**
+```json
+{
+  "_id": ObjectId,
+  "userId": ObjectId,
+  "testimonials": [ObjectId],
+  "theme": "light" | "dark",
+  "layout": "grid" | "carousel" | "list",
+  "createdAt": Date
+}
+```
+
+### **4. SocialMedia Collection**
+```json
+{
+  "_id": ObjectId,
+  "userId": ObjectId,
+  "platform": "LinkedIn" | "Twitter" | "Google",
+  "importedTestimonials": [ObjectId],
+  "createdAt": Date
+}
+```
+
+### **5. Reports Collection** *(Optional)*
+```json
+{
+  "_id": ObjectId,
+  "userId": ObjectId,
+  "widgetId": ObjectId,
+  "views": Number,
+  "shares": Number,
+  "createdAt": Date
+}
+```
+
+## **3. Conclusion**
+This database structure ensures efficient storage, retrieval, and management of user-generated testimonials, embedded widgets, and social media integrations. The **collections** are designed to support user roles, testimonial tracking, and customization for embedding widgets.
+
+
+--------------------------------------------
+Phase 3
+--------------------------------------------
+
+**Database Collections for Testimonial Collection & Embedding System**
+
+## **1. Introduction**
+The system uses **MongoDB Atlas** as its database, storing data in structured collections. Below is an overview of the collections required to support all system functionalities.
+
+## **2. Database Collections & Their Purpose**
+
+### **1. Users Collection**
+Stores user information, authentication details, and role-based access control.
+```json
+{
+  "_id": ObjectId,  // Unique user ID
+  "name": String,  // Full name of the user
+  "email": String,  // Unique email for login
+  "password": String,  // Encrypted password
+  "role": "user" | "admin",  // Defines user privileges
+  "createdAt": Date  // Account creation timestamp
+}
+```
+
+### **2. Testimonials Collection**
+Stores testimonials submitted by users, including approval status and categorization.
+```json
+{
+  "_id": ObjectId,  // Unique testimonial ID
+  "userId": ObjectId,  // References the user who submitted the testimonial
+  "content": String,  // Testimonial text content
+  "mediaUrl": String,  // URL to an optional image or video
+  "rating": Number,  // Rating (1-5 scale)
+  "category": String,  // Category under which the testimonial falls
+  "tags": [String],  // Keywords for filtering and searching
+  "status": "pending" | "approved" | "rejected",  // Testimonial approval status
+  "createdAt": Date  // Submission timestamp
+}
+```
+
+### **3. Widgets Collection**
+Stores widgets that users create for embedding testimonials on their websites.
+```json
+{
+  "_id": ObjectId,  // Unique widget ID
+  "userId": ObjectId,  // References the user who created the widget
+  "testimonials": [ObjectId],  // List of testimonial IDs associated with the widget
+  "theme": "light" | "dark",  // Theme preference for the widget
+  "layout": "grid" | "carousel" | "list",  // Display layout option
+  "createdAt": Date  // Widget creation timestamp
+}
+```
+
+### **4. SocialMedia Collection**
+Tracks testimonials imported from social media platforms.
+```json
+{
+  "_id": ObjectId,  // Unique record ID
+  "userId": ObjectId,  // References the user who imported testimonials
+  "platform": "LinkedIn" | "Twitter" | "Google",  // Social media source
+  "importedTestimonials": [ObjectId],  // List of imported testimonial IDs
+  "createdAt": Date  // Import timestamp
+}
+```
+
+### **5. Reports Collection** *(Optional)*
+Stores analytics and performance metrics of testimonials.
+```json
+{
+  "_id": ObjectId,  // Unique report ID
+  "userId": ObjectId,  // References the user generating reports
+  "widgetId": ObjectId,  // References associated widget
+  "views": Number,  // Number of times testimonials were viewed
+  "shares": Number,  // Number of social media shares
+  "createdAt": Date  // Report generation timestamp
+}
+```
+
+## **3. Conclusion**
+This database structure ensures efficient storage, retrieval, and management of user-generated testimonials, embedded widgets, and social media integrations. The **collections** are designed to support user roles, testimonial tracking, and customization for embedding widgets.
+
+
+--------------------------------------------
+Phase 4
+--------------------------------------------
+
+**Database Collections for Testimonial Collection & Embedding System**
+
+## **1. Introduction**
+The system uses **MongoDB Atlas** as its database, storing data in structured collections. Below is an overview of the collections required to support all system functionalities.
+
+## **2. Database Collections & Their Purpose**
+
+### **1. Users Collection**
+Stores user information, authentication details, and role-based access control.
+```
+Collection: Users
+- _id (ObjectId) - Unique user ID
+- name (String) - Full name of the user
+- email (String) - Unique email for login
+- password (String) - Encrypted password
+- role (String) - 'user' or 'admin' defining access level
+- createdAt (Date) - Account creation timestamp
+```
+
+### **2. Testimonials Collection**
+Stores testimonials submitted by users, including approval status and categorization.
+```
+Collection: Testimonials
+- _id (ObjectId) - Unique testimonial ID
+- userId (ObjectId) - References the user who submitted the testimonial
+- content (String) - Testimonial text content
+- mediaUrl (String) - URL to an optional image or video
+- rating (Number) - Rating (1-5 scale)
+- category (String) - Category under which the testimonial falls
+- tags (Array[String]) - Keywords for filtering and searching
+- status (String) - 'pending', 'approved', or 'rejected' status
+- createdAt (Date) - Submission timestamp
+```
+
+### **3. Widgets Collection**
+Stores widgets that users create for embedding testimonials on their websites.
+```
+Collection: Widgets
+- _id (ObjectId) - Unique widget ID
+- userId (ObjectId) - References the user who created the widget
+- testimonials (Array[ObjectId]) - List of testimonial IDs associated with the widget
+- theme (String) - 'light' or 'dark' theme preference
+- layout (String) - 'grid', 'carousel', or 'list' display layout
+- createdAt (Date) - Widget creation timestamp
+```
+
+### **4. SocialMedia Collection**
+Tracks testimonials imported from social media platforms.
+```
+Collection: SocialMedia
+- _id (ObjectId) - Unique record ID
+- userId (ObjectId) - References the user who imported testimonials
+- platform (String) - 'LinkedIn', 'Twitter', or 'Google' (source platform)
+- importedTestimonials (Array[ObjectId]) - List of imported testimonial IDs
+- createdAt (Date) - Import timestamp
+```
+
+### **5. Reports Collection** *(Optional)*
+Stores analytics and performance metrics of testimonials.
+```
+Collection: Reports
+- _id (ObjectId) - Unique report ID
+- userId (ObjectId) - References the user generating reports
+- widgetId (ObjectId) - References associated widget
+- views (Number) - Number of times testimonials were viewed
+- shares (Number) - Number of social media shares
+- createdAt (Date) - Report generation timestamp
+```
+
+## **3. Data Model Description**
+The **Testimonial Collection & Embedding System** follows a relational structure within MongoDB, utilizing **ObjectId references** to establish relationships between collections.
+
+### **Relationships Between Collections:**
+- Each **User** can submit multiple **Testimonials** (One-to-Many).
+- Each **Testimonial** belongs to a single **User** but can be categorized and tagged for filtering.
+- Each **Widget** belongs to a single **User** and contains multiple **Testimonials**.
+- Each **SocialMedia** record links **Users** with imported **Testimonials**.
+- Each **Report** tracks engagement metrics for a **Widget**.
+
+### **Example Data Flow:**
+1. A **User** creates an account.
+2. The **User** submits a **Testimonial**, which is stored in the **Testimonials Collection**.
+3. The **Testimonial** can be **approved/rejected** and categorized.
+4. The **User** creates a **Widget**, selecting approved **Testimonials** for display.
+5. The **Widget** can be embedded on external websites.
+6. Engagement data (views, shares) is tracked in the **Reports Collection**.
+7. **SocialMedia Integration** allows users to import testimonials from other platforms.
+
+## **4. Conclusion**
+This database structure ensures efficient storage, retrieval, and management of user-generated testimonials, embedded widgets, and social media integrations. The **collections** are designed to support user roles, testimonial tracking, and customization for embedding widgets.
+
