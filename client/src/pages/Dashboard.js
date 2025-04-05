@@ -64,7 +64,7 @@ export default function Dashboard() {
   });
 
   return (
-    <div className="min-h-screen bg-black-900 text-white bg-gray-900">
+    <div className="min-h-screen bg-black-900 text-white bg-gray-800">
       {/* App Bar */}
       <header className="bg-black-900 shadow-md py-6 px-16 flex justify-between items-center border-b border-gray-500">
         <h1 className="text-2xl font-bold text-white">Testimonials</h1>
