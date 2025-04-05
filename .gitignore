@@ -1,0 +1,23 @@
+# Ignore node modules globally
+node_modules/
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Build outputs
+dist/
+build/
+
+# Mac junk
+.DS_Store
+
+# Editor junk
+.vscode/
+.idea/
