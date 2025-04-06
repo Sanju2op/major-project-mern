@@ -7,6 +7,7 @@ export default function CreateSpacePage() {
 
   const handleSuccess = (space) => {
     // Redirect to dashboard or space detail page
+    alert("New space Created!");
     navigate("/dashboard");
   };
 

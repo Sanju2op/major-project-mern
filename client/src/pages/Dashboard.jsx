@@ -38,9 +38,11 @@ export default function Dashboard() {
         const plainSpaces = response.data.spaces.map((space) => ({
           _id: space._id,
           name: space.name,
+          headerTitle: space.headerTitle,
           collectionType: space.collectionType,
           customMessage: space.customMessage,
           questions: space.questions,
+          slug: space.slug,
           createdAt: space.createdAt,
         }));
 
@@ -65,7 +67,7 @@ export default function Dashboard() {
   const handleSpaceClick = (spaceId) => {
     // Redirect to space details/manage page
     // You can implement this functionality when needed
-    console.log("Clicked on space:", spaceId);
+    // console.log("Clicked on space:", spaceId);
   };
 
   if (!isLoaded) return <div>Loading...</div>;
@@ -150,12 +152,18 @@ export default function Dashboard() {
                       ⋮
                     </button> */}
                     <MenuButton
-                      spaceName={space.name}
+                      spaceData={space}
                       isOpen={openMenuSpace === space.name}
-                      onToggle={setOpenMenuSpace}
+                      onToggle={(name) => setOpenMenuSpace(name)}
+                      onUpdateSuccess={(updatedSpace) => {
+                        setSpaces((prev) =>
+                          prev.map((s) => (s._id === updatedSpace._id ? updatedSpace : s))
+                        );
+                      }}
+                      onDeleteSuccess={(deletedId) => {
+                        setSpaces((prev) => prev.filter((s) => s._id !== deletedId));
+                      }}
                     />
-
-
                   </div>
 
                   <div>
