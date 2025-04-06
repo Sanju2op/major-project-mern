@@ -14,7 +14,7 @@ export const syncUser = async (req, res) => {
       existingUser = await User.create({ userId });
       console.log("✅ New user created:", existingUser.userId);
     } else {
-      console.log("✅ User already exists:", existingUser.userId);
+      // console.log("✅ User already exists:", existingUser.userId);
     }
 
     return res

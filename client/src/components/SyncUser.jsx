@@ -16,7 +16,7 @@ const SyncUser = () => {
 
         console.log("✅ User synced successfully!", res.data);
       } catch (err) {
-        console.error("❌ Failed to sync user:", err.response?.data || err.message);
+        console.error("❌ Failed to sync user:", err.response?.data || err.message); 
       }
     };
 
