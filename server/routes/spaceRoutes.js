@@ -59,9 +59,9 @@ router.post("/", requireAuth, async (req, res) => {
 router.get("/", requireAuth, async (req, res) => {
   const { userId } = req.auth;
   if (!userId) {
-    console.error("userid not found", userId);
+    // console.error("userid not found", userId);
   } else {
-    console.error("userId found", userId, process.env.CLERK_SECRET_KEY);
+    // console.error("userId found", userId, process.env.CLERK_SECRET_KEY);
   }
 
   try {
@@ -78,11 +78,11 @@ router.get("/", requireAuth, async (req, res) => {
 });
 
 // Get a specific space
-router.get("/:id", requireAuth, async (req, res) => {
+router.get("/:spaceName", requireAuth, async (req, res) => {
   const { userId } = req.auth;
 
   try {
-    const space = await Space.findOne({ _id: req.params.id, userId });
+    const space = await Space.findOne({ name: req.params.spaceName, userId });
 
     if (!space) {
       return res.status(404).json({ message: "Space not found" });

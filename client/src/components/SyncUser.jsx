@@ -14,9 +14,9 @@ const SyncUser = () => {
           userId: user.id, // 👈 send the Clerk userId
         });
 
-        console.log("✅ User synced successfully!", res.data);
+        console.log("✅", res.data.message);
       } catch (err) {
-        console.error("❌ Failed to sync user:", err.response?.data || err.message); 
+        console.error("❌ Failed to sync user:", err.response?.data || err.message);
       }
     };
 

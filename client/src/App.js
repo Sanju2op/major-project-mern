@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import SyncUser from "./components/SyncUser";
+import ProductPage from "./pages/ProductPage";
 
 const clerkFrontendApi = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
 
@@ -19,6 +20,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/products/:spaceName" element={<ProductPage />} />
         </Routes>
       </Router>
     </ClerkProvider>

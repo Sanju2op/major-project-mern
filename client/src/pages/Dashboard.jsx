@@ -2,6 +2,7 @@ import { useAuth, RedirectToSignIn, UserButton } from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import SpaceForm from "../components/SpaceForm";
+import MenuButton from "../components/MenuButton";
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -18,6 +19,8 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [openMenuSpace, setOpenMenuSpace] = useState(null);
+
 
   useEffect(() => {
     const fetchSpaces = async () => {
@@ -138,14 +141,21 @@ export default function Dashboard() {
                   className="bg-gray-700 p-6 rounded-lg shadow-md space-y-4 cursor-pointer hover:bg-gray-600 transition-colors">
                   <div className="flex justify-between items-center">
                     <p className="font-semibold text-xl">{space.name}</p>
-                    <button
+                    {/* <button
                       className="text-gray-400 hover:text-white p-1 rounded-full hover:bg-gray-500 transition-colors"
                       onClick={(e) => {
                         e.stopPropagation();
                         // Add dropdown menu functionality here
                       }}>
                       ⋮
-                    </button>
+                    </button> */}
+                    <MenuButton
+                      spaceName={space.name}
+                      isOpen={openMenuSpace === space.name}
+                      onToggle={setOpenMenuSpace}
+                    />
+
+
                   </div>
 
                   <div>
