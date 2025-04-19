@@ -8,6 +8,7 @@ export default function ProductPage() {
   const { isLoaded, getToken } = useAuth();
   const { spaceName } = useParams();
   const [space, setSpace] = useState(null);
+  const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // 🔥 New: Modal control
@@ -38,6 +39,28 @@ export default function ProductPage() {
 
     if (spaceName && isLoaded) fetchSpace();
   }, [spaceName, isLoaded, getToken]);
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const token = await getToken();
+
+        const res = await axios.get(`http://localhost:5000/api/testimonials/space/${space._id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        });
+
+        setTestimonials(res.data.testimonials);
+      } catch (error) {
+        console.error("Error fetching testimonials:", error.response?.data || error.message);
+      }
+    };
+
+    if (space && isLoaded) fetchTestimonials();
+  }, [space, isLoaded, getToken]);
+
 
   // 🔥 New: update space after editing
   const handleSpaceUpdate = (updatedSpace) => {
@@ -118,7 +141,7 @@ export default function ProductPage() {
         </aside>
 
         {/* Right Panel */}
-        <main className="flex-1 p-8">
+        {/* <main className="flex-1 p-8">
           <div className="text-center text-gray-400">
             <p className="text-lg">No testimonials yet</p>
           </div>
@@ -133,7 +156,70 @@ export default function ProductPage() {
               <span>Add a Text</span>
             </button>
           </div>
+        </main> */}
+        <main className="flex-1 p-8">
+          {testimonials.length === 0 ? (
+            <div className="text-center text-gray-400">
+              <p className="text-lg">No testimonials yet</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 gap-6">
+              {testimonials.map((t) => (
+                <div key={t._id} className="bg-gray-800 p-6 rounded-lg shadow-md">
+                  <div className="flex items-center space-x-4 mb-4">
+                    <img
+                      src={t.author.avatar || "https://placehold.jp/34/3d4070/ffffff/150x150.png?text=Not%20Uploaded"}
+                      alt={t.author.name}
+                      className="w-12 h-12 rounded-full"
+                    />
+                    <div>
+                      <h4 className="text-lg font-semibold">{t.author.name}</h4>
+                      <p className="text-sm text-gray-400">{t.author.company}</p>
+                    </div>
+                  </div>
+
+                  {t.rating && (
+                    <p className="mb-2 text-yellow-400">⭐ {t.rating}/5</p>
+                  )}
+
+                  <p className="text-gray-300 mb-2">{t.content}</p>
+
+                  {t.answers && t.answers.length > 0 && (
+                    <div className="mt-4 space-y-2 text-sm text-gray-400">
+                      {t.answers.map((a, i) => (
+                        <div key={i}>
+                          <p className="font-semibold">{a.question}</p>
+                          <p>{a.answer}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {(t.socialLinks?.twitter || t.socialLinks?.linkedin || t.socialLinks?.facebook) && (
+                    <div className="mt-4 text-sm text-blue-400 space-x-3">
+                      {t.socialLinks.twitter && <a href={t.socialLinks.twitter} target="_blank" rel="noreferrer">Twitter</a>}
+                      {t.socialLinks.linkedin && <a href={t.socialLinks.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>}
+                      {t.socialLinks.facebook && <a href={t.socialLinks.facebook} target="_blank" rel="noreferrer">Facebook</a>}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Buttons */}
+          <div className="flex justify-center space-x-4 mt-10">
+            <button className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md">
+              <span>➕</span>
+              <span>Add a Video</span>
+            </button>
+            <button className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md">
+              <span>📝</span>
+              <span>Add a Text</span>
+            </button>
+          </div>
         </main>
+
       </div>
 
       {/* 🔥 Edit Modal */}
