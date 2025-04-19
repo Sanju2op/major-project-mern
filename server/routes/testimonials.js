@@ -1,9 +1,17 @@
 import express from "express";
-import { submitTestimonial } from "../controllers/testimonialController.js";
+import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
+import {
+  submitTestimonial,
+  getSpaceTestimonials, // 👈 Import the new controller
+} from "../controllers/testimonialController.js";
 
 const router = express.Router();
+const requireAuth = ClerkExpressRequireAuth({});
 
-// POST /api/testimonials/:spaceSlug
+// Public: Submit testimonial
 router.post("/:spaceSlug", submitTestimonial);
+
+// 🔐 Private: Get testimonials for a space
+router.get("/space/:spaceId", requireAuth, getSpaceTestimonials);
 
 export default router;
