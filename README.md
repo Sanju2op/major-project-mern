@@ -9,6 +9,7 @@ A full-stack MERN + Clerk application for collecting and managing testimonials.
 
 Project file Structure:
 
+<pre>
 my-app/
 │
 ├── client/ # React frontend
@@ -34,3 +35,4 @@ my-app/
 ├── .env # Environment variables
 ├── .gitignore
 └── README.md
+</pre>
