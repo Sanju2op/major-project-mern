@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import spaceRoutes from "./routes/spaceRoutes.js";
-import testimonialRoutes from "./routes/testimonials.js"; // ✅ import the new route
+import testimonialRoutes from "./routes/testimonials.js";
 
 dotenv.config();
 const app = express();
