@@ -54,12 +54,26 @@ export default function SpacePage() {
     setForm((prev) => ({ ...prev, answers: updated }));
   };
 
-  const handleSubmit = (e) => {
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   // Here you would call your POST API
+  //   console.log("Submitting form:", form);
+  //   setSuccess(true);
+  // };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would call your POST API
-    console.log("Submitting form:", form);
-    setSuccess(true);
+
+    try {
+      await axios.post(`http://localhost:5000/api/testimonials/${space.slug}`, form);
+      setSuccess(true);
+      setShowForm(false); // Optional: hide form after submission
+    } catch (error) {
+      console.error("Error submitting testimonial:", error);
+      alert("Failed to submit testimonial. Please try again.");
+    }
   };
+
 
   if (loading) return <div className="p-16 text-white">Loading...</div>;
   if (!space) return <div className="p-16 text-red-400">Space not found</div>;
