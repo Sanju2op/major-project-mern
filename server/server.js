@@ -4,15 +4,16 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import spaceRoutes from "./routes/spaceRoutes.js";
+import testimonialRoutes from "./routes/testimonials.js"; // ✅ import the new route
 
 dotenv.config();
 const app = express();
-// const MONGO_URI = process.env.MONGO_URI;
+
 // Middleware
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(express.json());
 
-// Connect DB
+// Connect to MongoDB
 connectDB();
 
 // Routes
@@ -21,8 +22,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
-
 app.use("/api/spaces", spaceRoutes);
+app.use("/api/testimonials", testimonialRoutes); // ✅ add this line
 
 // Start Server
 const PORT = process.env.PORT || 5000;
