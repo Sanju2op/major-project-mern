@@ -33,7 +33,7 @@ export default function MenuButton({ spaceData, isOpen, onToggle, onUpdateSucces
   };
 
   const handleCopyLink = () => {
-    const fullUrl = `https://testimonial.to/${spaceData.slug}`;
+    const fullUrl = `http://localhost:3000/${spaceData.slug}`;
     navigator.clipboard.writeText(fullUrl)
       .then(() => {
         alert("Link copied to clipboard!");
@@ -85,7 +85,7 @@ export default function MenuButton({ spaceData, isOpen, onToggle, onUpdateSucces
               <Link to={`/products/${spaceData.name}`}>Manage Testimonials</Link>
             </li>
             <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer"
-              onClick={handleCopyLink}  
+              onClick={handleCopyLink}
             >
               Get the Link
             </li>
