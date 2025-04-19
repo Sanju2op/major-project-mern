@@ -7,6 +7,7 @@ import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import SyncUser from "./components/SyncUser";
 import ProductPage from "./pages/ProductPage";
+import SpacePage from "./pages/SpacePage";
 import NotFound from "./pages/NotFound";
 
 const clerkFrontendApi = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
@@ -22,6 +23,7 @@ function App() {
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/products/:spaceName" element={<ProductPage />} />
+          <Route path="/:spaceName" element={<SpacePage />} />
           {/* 404 fallback */}
           <Route path="*" element={<NotFound />} />
         </Routes>

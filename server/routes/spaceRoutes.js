@@ -77,12 +77,31 @@ router.get("/", requireAuth, async (req, res) => {
   }
 });
 
-// Get a specific space
-router.get("/:spaceName", requireAuth, async (req, res) => {
-  const { userId } = req.auth;
+// // Get a specific space
+// router.get("/:spaceName", requireAuth, async (req, res) => {
+//   const { userId } = req.auth;
 
+//   try {
+//     const space = await Space.findOne({ name: req.params.spaceName, userId });
+
+//     if (!space) {
+//       return res.status(404).json({ message: "Space not found" });
+//     }
+
+//     res.json({
+//       success: true,
+//       space,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching space:", error);
+//     res.status(500).json({ message: "Server error", error: error.message });
+//   }
+// });
+
+// ✅ PUBLIC - Get a specific space by name (for viewing and submitting testimonials)
+router.get("/:spaceName", async (req, res) => {
   try {
-    const space = await Space.findOne({ name: req.params.spaceName, userId });
+    const space = await Space.findOne({ name: req.params.spaceName });
 
     if (!space) {
       return res.status(404).json({ message: "Space not found" });
