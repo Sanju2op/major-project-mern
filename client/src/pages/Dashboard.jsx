@@ -173,14 +173,14 @@ export default function Dashboard() {
 
                   <div className="pt-2 border-t border-gray-600 flex justify-between items-center">
                     <span className="text-gray-300">0 testimonials</span>
-                    <button
+                    {/* <button
                       className="text-blue-400 hover:text-blue-300 font-medium"
                       onClick={(e) => {
                         e.stopPropagation();
                         // Add view testimonials functionality
                       }}>
                       View
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               ))
