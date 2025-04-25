@@ -73,3 +73,49 @@ export const getSpaceTestimonials = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
+// Approve a testimonial
+export const approveTestimonial = async (req, res) => {
+  const { testimonialId } = req.params;
+  const { userId } = req.auth;
+
+  try {
+    const testimonial = await Testimonial.findById(testimonialId);
+    if (!testimonial)
+      return res.status(404).json({ message: "Testimonial not found" });
+
+    const space = await Space.findOne({ _id: testimonial.spaceId, userId });
+    if (!space) return res.status(403).json({ message: "Access denied" });
+
+    testimonial.status = "approved";
+    await testimonial.save();
+
+    res.status(200).json({ message: "Testimonial approved", testimonial });
+  } catch (err) {
+    console.error("Approve error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+// Reject a testimonial
+export const rejectTestimonial = async (req, res) => {
+  const { testimonialId } = req.params;
+  const { userId } = req.auth;
+
+  try {
+    const testimonial = await Testimonial.findById(testimonialId);
+    if (!testimonial)
+      return res.status(404).json({ message: "Testimonial not found" });
+
+    const space = await Space.findOne({ _id: testimonial.spaceId, userId });
+    if (!space) return res.status(403).json({ message: "Access denied" });
+
+    testimonial.status = "rejected";
+    await testimonial.save();
+
+    res.status(200).json({ message: "Testimonial rejected", testimonial });
+  } catch (err) {
+    console.error("Reject error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};

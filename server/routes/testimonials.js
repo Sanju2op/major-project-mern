@@ -1,8 +1,14 @@
 import express from "express";
 import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
+// import {
+//   submitTestimonial,
+//   getSpaceTestimonials, // 👈 Import the new controller
+// } from "../controllers/testimonialController.js";
 import {
   submitTestimonial,
-  getSpaceTestimonials, // 👈 Import the new controller
+  getSpaceTestimonials,
+  approveTestimonial,
+  rejectTestimonial,
 } from "../controllers/testimonialController.js";
 
 const router = express.Router();
@@ -13,5 +19,11 @@ router.post("/:spaceSlug", submitTestimonial);
 
 // 🔐 Private: Get testimonials for a space
 router.get("/space/:spaceId", requireAuth, getSpaceTestimonials);
+
+// Approve testimonial
+router.patch("/:testimonialId/approve", requireAuth, approveTestimonial);
+
+// Reject testimonial
+router.patch("/:testimonialId/reject", requireAuth, rejectTestimonial);
 
 export default router;
