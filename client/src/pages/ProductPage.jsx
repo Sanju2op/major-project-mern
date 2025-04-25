@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { UserButton, useAuth } from "@clerk/clerk-react";
 import SpaceForm from "../components/SpaceForm";
 import axios from "axios";
+import { FaTwitter, FaInstagram, FaCode } from "react-icons/fa";
 
 export default function ProductPage() {
   const { isLoaded, getToken } = useAuth();
@@ -10,8 +11,9 @@ export default function ProductPage() {
   const [space, setSpace] = useState(null);
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showScriptModal, setShowScriptModal] = useState(false);
+  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
     const fetchSpace = async () => {
@@ -94,6 +96,24 @@ export default function ProductPage() {
     }
   };
 
+  const generateEmbedScript = () => {
+    const script = `<script src="${window.location.origin}/api/embed/${space._id}" async></script>`;
+    return script;
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    alert("Script copied to clipboard!");
+  };
+
+  const filteredTestimonials = testimonials.filter((t) => {
+    if (filter === "all") return true;
+    if (filter === "approved") return t.status === "approved";
+    if (filter === "pending") return t.status === "pending";
+    if (filter === "rejected") return t.status === "rejected";
+    return true;
+  });
+
   if (loading) return <div className="p-16 text-white">Loading...</div>;
   if (!space) return <div className="p-16 text-red-400">Space not found.</div>;
 
@@ -102,7 +122,16 @@ export default function ProductPage() {
       {/* Header */}
       <header className="bg-black shadow-md py-6 px-16 flex justify-between items-center border-b border-gray-500">
         <h1 className="text-2xl font-bold">Testimonials</h1>
-        <UserButton />
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={() => setShowScriptModal(true)}
+            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+          >
+            <FaCode />
+            <span>Get Embed Code</span>
+          </button>
+          <UserButton />
+        </div>
       </header>
 
       {/* Summary */}
@@ -128,35 +157,45 @@ export default function ProductPage() {
         {/* Sidebar */}
         <aside className="w-64 bg-gray-800 border-r border-gray-600 min-h-screen p-4">
           <div>
-            <h3 className="text-lg font-semibold text-gray-300 mb-2">Inbox</h3>
+            <h3 className="text-lg font-semibold text-gray-300 mb-2">Filters</h3>
             <ul className="space-y-2">
-              <li className="p-2 bg-gray-700 rounded-md cursor-pointer">All</li>
-              <li className="p-2 hover:bg-gray-700 rounded-md cursor-pointer">Text</li>
-              <li className="p-2 hover:bg-gray-700 rounded-md cursor-pointer">Liked</li>
-              <li className="p-2 hover:bg-gray-700 rounded-md cursor-pointer">Archived</li>
-            </ul>
-          </div>
-          <div className="mt-6">
-            <div className="flex justify-between items-center cursor-pointer">
-              <h3 className="text-lg font-semibold text-gray-300">Social Media</h3>
-              <span className="text-gray-400">▼</span>
-            </div>
-            <ul className="space-y-2 mt-2">
-              <li className="p-2 hover:bg-gray-700 rounded-md cursor-pointer">YouTube</li>
-              <li className="p-2 hover:bg-gray-700 rounded-md cursor-pointer">Twitter</li>
+              <li
+                className={`p-2 rounded-md cursor-pointer ${filter === "all" ? "bg-gray-700" : "hover:bg-gray-700"}`}
+                onClick={() => setFilter("all")}
+              >
+                All
+              </li>
+              <li
+                className={`p-2 rounded-md cursor-pointer ${filter === "approved" ? "bg-gray-700" : "hover:bg-gray-700"}`}
+                onClick={() => setFilter("approved")}
+              >
+                Approved
+              </li>
+              <li
+                className={`p-2 rounded-md cursor-pointer ${filter === "pending" ? "bg-gray-700" : "hover:bg-gray-700"}`}
+                onClick={() => setFilter("pending")}
+              >
+                Pending
+              </li>
+              <li
+                className={`p-2 rounded-md cursor-pointer ${filter === "rejected" ? "bg-gray-700" : "hover:bg-gray-700"}`}
+                onClick={() => setFilter("rejected")}
+              >
+                Rejected
+              </li>
             </ul>
           </div>
         </aside>
 
         {/* Main Panel */}
         <main className="flex-1 p-8">
-          {testimonials.length === 0 ? (
+          {filteredTestimonials.length === 0 ? (
             <div className="text-center text-gray-400">
               <p className="text-lg">No testimonials yet</p>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 gap-6">
-              {testimonials.map((t) => (
+              {filteredTestimonials.map((t) => (
                 <div key={t._id} className="bg-gray-800 p-6 rounded-lg shadow-md">
                   <div className="flex items-center space-x-4 mb-4">
                     <img
@@ -187,29 +226,33 @@ export default function ProductPage() {
                     </div>
                   )}
 
-                  {(t.socialLinks?.twitter ||
-                    t.socialLinks?.linkedin ||
-                    t.socialLinks?.facebook) && (
-                      <div className="mt-4 text-sm text-blue-400 space-x-3">
-                        {t.socialLinks.twitter && (
-                          <a href={t.socialLinks.twitter} target="_blank" rel="noreferrer">
-                            Twitter
-                          </a>
-                        )}
-                        {t.socialLinks.linkedin && (
-                          <a href={t.socialLinks.linkedin} target="_blank" rel="noreferrer">
-                            LinkedIn
-                          </a>
-                        )}
-                        {t.socialLinks.facebook && (
-                          <a href={t.socialLinks.facebook} target="_blank" rel="noreferrer">
-                            Facebook
-                          </a>
-                        )}
-                      </div>
-                    )}
+                  {/* Social Media Links */}
+                  {(t.socialLinks?.twitter || t.socialLinks?.instagram) && (
+                    <div className="mt-4 flex space-x-3">
+                      {t.socialLinks.twitter && (
+                        <a
+                          href={t.socialLinks.twitter}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-blue-400 hover:text-blue-300"
+                        >
+                          <FaTwitter className="w-5 h-5" />
+                        </a>
+                      )}
+                      {t.socialLinks.instagram && (
+                        <a
+                          href={t.socialLinks.instagram}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-pink-400 hover:text-pink-300"
+                        >
+                          <FaInstagram className="w-5 h-5" />
+                        </a>
+                      )}
+                    </div>
+                  )}
 
-                  {/* ✅ Moderation buttons */}
+                  {/* Moderation buttons */}
                   {t.status === "pending" && (
                     <div className="mt-4 flex space-x-4">
                       <button
@@ -248,28 +291,42 @@ export default function ProductPage() {
         </main>
       </div>
 
-      {/* Edit Modal */}
-      {showEditModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-          <div className="bg-gray-900 rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center border-b border-gray-700 p-6">
-              <h3 className="text-xl font-semibold">Edit Space</h3>
-              <button
-                onClick={() => setShowEditModal(false)}
-                className="text-gray-400 hover:text-white"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
-                  viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+      {/* Script Modal */}
+      {showScriptModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-gray-800 p-6 rounded-lg w-96">
+            <h3 className="text-xl font-semibold mb-4">Embed Code</h3>
+            <div className="bg-gray-900 p-4 rounded-md mb-4 overflow-auto">
+              <code className="text-sm text-gray-300 break-words whitespace-pre-wrap">
+                {generateEmbedScript()}
+              </code>
             </div>
-            <div className="p-6">
-              <SpaceForm space={space} onSuccess={handleSpaceUpdate} />
+
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setShowScriptModal(false)}
+                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => copyToClipboard(generateEmbedScript())}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
+              >
+                Copy
+              </button>
             </div>
           </div>
         </div>
+      )}
+
+      {/* Edit Modal */}
+      {showEditModal && (
+        <SpaceForm
+          space={space}
+          onClose={() => setShowEditModal(false)}
+          onUpdate={handleSpaceUpdate}
+        />
       )}
     </div>
   );
