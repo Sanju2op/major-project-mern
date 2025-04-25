@@ -22,7 +22,8 @@ router.post("/", requireAuth, async (req, res) => {
     } = req.body;
 
     // Generate a slug from the space name
-    const slug = name.toLowerCase().replace(/\s+/g, "-");
+    // const slug = name.toLowerCase().replace(/\s+/g, "-");
+    const slug = name;
 
     // Check if slug already exists
     const existingSpace = await Space.findOne({ slug });
