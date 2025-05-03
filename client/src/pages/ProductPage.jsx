@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { UserButton, useAuth } from "@clerk/clerk-react";
 import SpaceForm from "../components/SpaceForm";
 import axios from "axios";
@@ -14,13 +14,14 @@ export default function ProductPage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showScriptModal, setShowScriptModal] = useState(false);
   const [filter, setFilter] = useState("all");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSpace = async () => {
       try {
         const token = await getToken();
         const res = await axios.get(
-          `http://localhost:5000/api/spaces/${spaceName}`,
+          `${process.env.REACT_APP_API_URL}/api/spaces/product/${spaceName}`,
           {
             headers: { Authorization: `Bearer ${token}` },
             withCredentials: true,
@@ -42,7 +43,7 @@ export default function ProductPage() {
       try {
         const token = await getToken();
         const res = await axios.get(
-          `http://localhost:5000/api/testimonials/space/${space._id}`,
+          `${process.env.REACT_APP_API_URL}/api/testimonials/space/${space.slug}`,
           {
             headers: { Authorization: `Bearer ${token}` },
             withCredentials: true,
@@ -54,8 +55,8 @@ export default function ProductPage() {
       }
     };
 
-    if (space && isLoaded) fetchTestimonials();
-  }, [space, isLoaded, getToken]);
+    if (space) fetchTestimonials();
+  }, [space, getToken]);
 
   const handleSpaceUpdate = (updatedSpace) => {
     setSpace(updatedSpace);
@@ -63,36 +64,34 @@ export default function ProductPage() {
     alert("Space updated successfully!");
   };
 
-  // ✅ Approve / Reject handlers
+  // const handleDelete = async (testimonialId) => {
+  //   try {
+  //     await axios.delete(`${process.env.REACT_APP_API_URL}/api/testimonials/${testimonialId}`);
+  //     setTestimonials((prev) => prev.filter((t) => t._id !== testimonialId));
+  //   } catch (error) {
+  //     console.error("Error deleting testimonial:", error.response?.data || error.message);
+  //   }
+  // };
+
   const handleApprove = async (testimonialId) => {
     try {
-      const token = await getToken();
-      await axios.patch(
-        `http://localhost:5000/api/testimonials/${testimonialId}/approve`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
-      );
+      await axios.patch(`${process.env.REACT_APP_API_URL}/api/testimonials/${testimonialId}/approve`);
       setTestimonials((prev) =>
         prev.map((t) => (t._id === testimonialId ? { ...t, status: "approved" } : t))
       );
-    } catch (err) {
-      console.error("Error approving testimonial:", err.response?.data || err.message);
+    } catch (error) {
+      console.error("Error approving testimonial:", error.response?.data || error.message);
     }
   };
 
   const handleReject = async (testimonialId) => {
     try {
-      const token = await getToken();
-      await axios.patch(
-        `http://localhost:5000/api/testimonials/${testimonialId}/reject`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
-      );
+      await axios.patch(`${process.env.REACT_APP_API_URL}/api/testimonials/${testimonialId}/reject`);
       setTestimonials((prev) =>
         prev.map((t) => (t._id === testimonialId ? { ...t, status: "rejected" } : t))
       );
-    } catch (err) {
-      console.error("Error rejecting testimonial:", err.response?.data || err.message);
+    } catch (error) {
+      console.error("Error rejecting testimonial:", error.response?.data || error.message);
     }
   };
 
@@ -113,6 +112,10 @@ export default function ProductPage() {
     if (filter === "rejected") return t.status === "rejected";
     return true;
   });
+
+  const handleAddText = () => {
+    navigate(`${process.env.REACT_APP_CLIENT_URL}/${space.slug}`);
+  };
 
   if (loading) return <div className="p-16 text-white">Loading...</div>;
   if (!space) return <div className="p-16 text-red-400">Space not found.</div>;
@@ -283,7 +286,7 @@ export default function ProductPage() {
           )}
 
           <div className="flex justify-center space-x-4 mt-10">
-            <button className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md">
+            <button onClick={handleAddText} className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md">
               <span>📝</span>
               <span>Add a Text</span>
             </button>

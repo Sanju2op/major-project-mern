@@ -42,6 +42,27 @@ export default function SpaceForm({ space = null, onSuccess }) {
     setQuestions(questions.filter((_, i) => i !== index));
   };
 
+  // Add a function to generate a slug from the space name
+  const generateSlug = (name) => {
+    return name.toLowerCase().replace(/\s+/g, '-');
+  };
+
+  // Add a function to check for duplicate slugs
+  const checkDuplicateSlug = async (slug) => {
+    try {
+      const token = await getToken();
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/spaces/check-slug/${slug}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data.exists;
+    } catch (err) {
+      console.error("Error checking slug:", err);
+      return false;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -49,9 +70,20 @@ export default function SpaceForm({ space = null, onSuccess }) {
 
     try {
       const token = await getToken();
+      let slug = generateSlug(spaceName);
+      let duplicate = await checkDuplicateSlug(slug);
+      let counter = 1;
+
+      // If duplicate, modify the slug
+      while (duplicate) {
+        slug = `${generateSlug(spaceName)}${counter}`;
+        duplicate = await checkDuplicateSlug(slug);
+        counter++;
+      }
+
       const url = space
-        ? `http://localhost:5000/api/spaces/${space._id}`
-        : "http://localhost:5000/api/spaces";
+        ? `${process.env.REACT_APP_API_URL}/api/spaces/${space._id}`
+        : `${process.env.REACT_APP_API_URL}/api/spaces`;
 
       const method = space ? "put" : "post";
 
@@ -64,6 +96,7 @@ export default function SpaceForm({ space = null, onSuccess }) {
         },
         data: {
           name: spaceName,
+          slug, // Include the slug in the data
           headerTitle,
           customMessage,
           questions,

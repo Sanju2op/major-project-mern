@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Pencil } from "lucide-react";
-
 export default function SpacePage() {
-  const { spaceName } = useParams();
+  const { slug } = useParams();
+  const navigate = useNavigate();
   const [space, setSpace] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -26,8 +26,12 @@ export default function SpacePage() {
   useEffect(() => {
     const fetchSpace = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/spaces/${spaceName}`);
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/spaces/public/${slug}`);
         const spaceData = res.data.space;
+        if (!spaceData) {
+          navigate("/not-found");
+          return;
+        }
         setSpace(spaceData);
         const initialAnswers = (spaceData.questions || []).map((q) => ({
           question: q,
@@ -36,13 +40,14 @@ export default function SpacePage() {
         setForm((prev) => ({ ...prev, answers: initialAnswers }));
       } catch (err) {
         console.error("Error loading space:", err);
+        navigate("/not-found");
       } finally {
         setLoading(false);
       }
     };
 
-    if (spaceName) fetchSpace();
-  }, [spaceName]);
+    if (slug) fetchSpace();
+  }, [slug, navigate]);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -54,12 +59,6 @@ export default function SpacePage() {
     setForm((prev) => ({ ...prev, answers: updated }));
   };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   // Here you would call your POST API
-  //   console.log("Submitting form:", form);
-  //   setSuccess(true);
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -170,7 +169,7 @@ export default function SpacePage() {
 
           {space.starRatings && (
             <div>
-              <label className="block mb-1 font-medium">Rating (1–5)</label>
+              <label className="block mb-1 font-medium">Rating (1-5)</label>
               <input
                 className="w-full p-2 bg-gray-700 rounded-md"
                 type="number"

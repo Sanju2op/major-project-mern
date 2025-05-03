@@ -21,9 +21,9 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/signin" element={<SignInPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/signup/*" element={<SignUpPage />} />
           <Route path="/products/:spaceName" element={<ProductPage />} />
-          <Route path="/:spaceName" element={<SpacePage />} />
+          <Route path="/:slug" element={<SpacePage />} />
           {/* 404 fallback */}
           <Route path="*" element={<NotFound />} />
         </Routes>

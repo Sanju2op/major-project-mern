@@ -22,8 +22,7 @@ router.post("/", requireAuth, async (req, res) => {
     } = req.body;
 
     // Generate a slug from the space name
-    // const slug = name.toLowerCase().replace(/\s+/g, "-");
-    const slug = name;
+    const slug = name.toLowerCase().replace(/\s+/g, "-");
 
     // Check if slug already exists
     const existingSpace = await Space.findOne({ slug });
@@ -99,10 +98,10 @@ router.get("/", requireAuth, async (req, res) => {
 //   }
 // });
 
-// ✅ PUBLIC - Get a specific space by name (for viewing and submitting testimonials)
-router.get("/:spaceName", async (req, res) => {
+// ✅ PUBLIC - Get a specific space by slug (for viewing and submitting testimonials)
+router.get("/public/:slug", async (req, res) => {
   try {
-    const space = await Space.findOne({ name: req.params.spaceName });
+    const space = await Space.findOne({ slug: req.params.slug });
 
     if (!space) {
       return res.status(404).json({ message: "Space not found" });
@@ -113,7 +112,26 @@ router.get("/:spaceName", async (req, res) => {
       space,
     });
   } catch (error) {
-    console.error("Error fetching space:", error);
+    console.error("Error fetching space by slug:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+// Get a specific space by slug
+router.get("/product/:slug", async (req, res) => {
+  try {
+    const space = await Space.findOne({ slug: req.params.slug });
+
+    if (!space) {
+      return res.status(404).json({ message: "Space not found" });
+    }
+
+    res.json({
+      success: true,
+      space,
+    });
+  } catch (error) {
+    console.error("Error fetching space by slug:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });

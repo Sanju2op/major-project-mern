@@ -28,7 +28,7 @@ export default function Dashboard() {
         const token = await getToken();
         // console.log(token);
 
-        const response = await axios.get("http://localhost:5000/api/spaces", {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/spaces`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

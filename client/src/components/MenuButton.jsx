@@ -51,7 +51,7 @@ export default function MenuButton({ spaceData, isOpen, onToggle, onUpdateSucces
 
     try {
       const token = await getToken();
-      await axios.delete(`http://localhost:5000/api/spaces/${spaceData._id}`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/spaces/${spaceData._id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -82,7 +82,7 @@ export default function MenuButton({ spaceData, isOpen, onToggle, onUpdateSucces
         <div className="absolute top-8 right-0 bg-gray-800 text-white rounded-lg shadow-lg w-48 z-10">
           <ul className="p-2 space-y-2 text-sm">
             <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer">
-              <Link to={`/products/${spaceData.name}`}>Manage Testimonials</Link>
+              <Link to={`/products/${spaceData.slug}`}>Manage Testimonials</Link>
             </li>
             <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer"
               onClick={handleCopyLink}

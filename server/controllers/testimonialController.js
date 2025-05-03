@@ -47,24 +47,25 @@ export const submitTestimonial = async (req, res) => {
 
 // Fetch testimonials for a specific space (PRIVATE)
 export const getSpaceTestimonials = async (req, res) => {
-  const { spaceId } = req.params;
+  const { slug } = req.params;
   const { userId } = req.auth;
 
   try {
-    const space = await Space.findOne({ _id: spaceId, userId });
+    const space = await Space.findOne({ slug, userId });
 
     if (!space) {
       return res
         .status(404)
-        .json({ message: "Space not found or access denied" });
+        .json({ message: "Space not found - testimonialController.js" });
     }
 
-    const testimonials = await Testimonial.find({ spaceId }).sort({
+    const testimonials = await Testimonial.find({ spaceId: space._id }).sort({
       createdAt: -1,
     });
 
     res.status(200).json({
       success: true,
+      message: "space found - testimonialController.js",
       count: testimonials.length,
       testimonials,
     });
