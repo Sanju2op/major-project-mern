@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { UserButton, useAuth } from "@clerk/clerk-react";
 import SpaceForm from "../components/SpaceForm";
 import axios from "axios";
@@ -14,7 +14,7 @@ export default function ProductPage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showScriptModal, setShowScriptModal] = useState(false);
   const [filter, setFilter] = useState("all");
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSpace = async () => {
@@ -64,18 +64,30 @@ export default function ProductPage() {
     alert("Space updated successfully!");
   };
 
-  // const handleDelete = async (testimonialId) => {
-  //   try {
-  //     await axios.delete(`${process.env.REACT_APP_API_URL}/api/testimonials/${testimonialId}`);
-  //     setTestimonials((prev) => prev.filter((t) => t._id !== testimonialId));
-  //   } catch (error) {
-  //     console.error("Error deleting testimonial:", error.response?.data || error.message);
-  //   }
-  // };
+  const handleDelete = async (testimonialId) => {
+    try {
+      const token = await getToken();
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/testimonials/${testimonialId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+      });
+      setTestimonials((prev) => prev.filter((t) => t._id !== testimonialId));
+    } catch (error) {
+      console.error("Error deleting testimonial:", error.response?.data || error.message);
+    }
+  };
 
   const handleApprove = async (testimonialId) => {
     try {
-      await axios.patch(`${process.env.REACT_APP_API_URL}/api/testimonials/${testimonialId}/approve`);
+      const token = await getToken();
+      await axios.patch(
+        `${process.env.REACT_APP_API_URL}/api/testimonials/${testimonialId}/approve`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
+        }
+      );
       setTestimonials((prev) =>
         prev.map((t) => (t._id === testimonialId ? { ...t, status: "approved" } : t))
       );
@@ -86,7 +98,15 @@ export default function ProductPage() {
 
   const handleReject = async (testimonialId) => {
     try {
-      await axios.patch(`${process.env.REACT_APP_API_URL}/api/testimonials/${testimonialId}/reject`);
+      const token = await getToken();
+      await axios.patch(
+        `${process.env.REACT_APP_API_URL}/api/testimonials/${testimonialId}/reject`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
+        }
+      );
       setTestimonials((prev) =>
         prev.map((t) => (t._id === testimonialId ? { ...t, status: "rejected" } : t))
       );
@@ -96,8 +116,8 @@ export default function ProductPage() {
   };
 
   const generateEmbedScript = () => {
-    const script = `<script src="${window.location.origin}/api/embed/${space._id}" async></script>`;
-    return script;
+    const iframe = `<iframe src="${window.location.origin}/api/embed/${space._id}" width="600" height="400" frameborder="0" allowfullscreen></iframe>`;
+    return iframe;
   };
 
   const copyToClipboard = (text) => {
@@ -114,7 +134,10 @@ export default function ProductPage() {
   });
 
   const handleAddText = () => {
-    navigate(`${process.env.REACT_APP_CLIENT_URL}/${space.slug}`);
+    // window.confirm(process.env.REACT_APP_FRONTEND_URL);
+    // navigate(`${process.env.REACT_APP_FRONTEND_URL}/${space.slug}`, { replace: true });
+    window.location.replace(`${process.env.REACT_APP_FRONTEND_URL}/${space.slug}`);
+
   };
 
   if (loading) return <div className="p-16 text-white">Loading...</div>;
@@ -280,6 +303,16 @@ export default function ProductPage() {
                       </span>
                     </div>
                   )}
+
+                  {/* Delete button */}
+                  <div className="mt-4">
+                    <button
+                      onClick={() => handleDelete(t._id)}
+                      className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -325,11 +358,25 @@ export default function ProductPage() {
 
       {/* Edit Modal */}
       {showEditModal && (
-        <SpaceForm
-          space={space}
-          onClose={() => setShowEditModal(false)}
-          onUpdate={handleSpaceUpdate}
-        />
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+          <div className="bg-gray-900 rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center border-b border-gray-700 p-6">
+              <h3 className="text-xl font-semibold">Edit Space</h3>
+              <button
+                onClick={() => setShowEditModal(false)}
+                className="text-gray-400 hover:text-white"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="p-6">
+              <SpaceForm space={space} onClose={() => setShowEditModal(false)} onUpdate={handleSpaceUpdate} />
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

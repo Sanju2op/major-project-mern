@@ -120,3 +120,28 @@ export const rejectTestimonial = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+// Delete a testimonial
+export const deleteTestimonial = async (req, res) => {
+  const { testimonialId } = req.params;
+  const { userId } = req.auth;
+
+  try {
+    const testimonial = await Testimonial.findById(testimonialId);
+    if (!testimonial) {
+      return res.status(404).json({ message: "Testimonial not found" });
+    }
+
+    const space = await Space.findOne({ _id: testimonial.spaceId, userId });
+    if (!space) {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    await Testimonial.findByIdAndDelete(testimonialId);
+
+    res.status(200).json({ message: "Testimonial deleted successfully" });
+  } catch (err) {
+    console.error("Delete error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};

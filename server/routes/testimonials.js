@@ -9,6 +9,7 @@ import {
   getSpaceTestimonials,
   approveTestimonial,
   rejectTestimonial,
+  deleteTestimonial,
 } from "../controllers/testimonialController.js";
 
 const router = express.Router();
@@ -18,12 +19,15 @@ const requireAuth = ClerkExpressRequireAuth({});
 router.post("/:spaceSlug", submitTestimonial);
 
 // 🔐 Private: Get testimonials for a space
-router.get("/space/:spaceId", requireAuth, getSpaceTestimonials);
+router.get("/space/:slug", requireAuth, getSpaceTestimonials);
 
 // Approve testimonial
 router.patch("/:testimonialId/approve", requireAuth, approveTestimonial);
 
 // Reject testimonial
 router.patch("/:testimonialId/reject", requireAuth, rejectTestimonial);
+
+// Delete testimonial
+router.delete("/:testimonialId", requireAuth, deleteTestimonial);
 
 export default router;
