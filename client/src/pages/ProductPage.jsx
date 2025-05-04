@@ -4,6 +4,7 @@ import { UserButton, useAuth } from "@clerk/clerk-react";
 import SpaceForm from "../components/SpaceForm";
 import axios from "axios";
 import { FaTwitter, FaInstagram, FaCode } from "react-icons/fa";
+import GetEmbedCodeModal from "../components/GetEmbedCodeModal";
 
 export default function ProductPage() {
   const { isLoaded, getToken } = useAuth();
@@ -29,7 +30,10 @@ export default function ProductPage() {
         );
         setSpace(res.data.space);
       } catch (error) {
-        console.error("Error fetching space:", error.response?.data || error.message);
+        console.error(
+          "Error fetching space:",
+          error.response?.data || error.message
+        );
       } finally {
         setLoading(false);
       }
@@ -51,7 +55,10 @@ export default function ProductPage() {
         );
         setTestimonials(res.data.testimonials);
       } catch (error) {
-        console.error("Error fetching testimonials:", error.response?.data || error.message);
+        console.error(
+          "Error fetching testimonials:",
+          error.response?.data || error.message
+        );
       }
     };
 
@@ -67,13 +74,19 @@ export default function ProductPage() {
   const handleDelete = async (testimonialId) => {
     try {
       const token = await getToken();
-      await axios.delete(`${process.env.REACT_APP_API_URL}/api/testimonials/${testimonialId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
+      await axios.delete(
+        `${process.env.REACT_APP_API_URL}/api/testimonials/${testimonialId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
+        }
+      );
       setTestimonials((prev) => prev.filter((t) => t._id !== testimonialId));
     } catch (error) {
-      console.error("Error deleting testimonial:", error.response?.data || error.message);
+      console.error(
+        "Error deleting testimonial:",
+        error.response?.data || error.message
+      );
     }
   };
 
@@ -89,10 +102,15 @@ export default function ProductPage() {
         }
       );
       setTestimonials((prev) =>
-        prev.map((t) => (t._id === testimonialId ? { ...t, status: "approved" } : t))
+        prev.map((t) =>
+          t._id === testimonialId ? { ...t, status: "approved" } : t
+        )
       );
     } catch (error) {
-      console.error("Error approving testimonial:", error.response?.data || error.message);
+      console.error(
+        "Error approving testimonial:",
+        error.response?.data || error.message
+      );
     }
   };
 
@@ -108,22 +126,18 @@ export default function ProductPage() {
         }
       );
       setTestimonials((prev) =>
-        prev.map((t) => (t._id === testimonialId ? { ...t, status: "rejected" } : t))
+        prev.map((t) =>
+          t._id === testimonialId ? { ...t, status: "rejected" } : t
+        )
       );
     } catch (error) {
-      console.error("Error rejecting testimonial:", error.response?.data || error.message);
+      console.error(
+        "Error rejecting testimonial:",
+        error.response?.data || error.message
+      );
     }
   };
 
-  const generateEmbedScript = () => {
-    const iframe = `<iframe src="${window.location.origin}/api/embed/${space._id}" width="600" height="400" frameborder="0" allowfullscreen></iframe>`;
-    return iframe;
-  };
-
-  const copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text);
-    alert("Script copied to clipboard!");
-  };
 
   const filteredTestimonials = testimonials.filter((t) => {
     if (filter === "all") return true;
@@ -136,8 +150,9 @@ export default function ProductPage() {
   const handleAddText = () => {
     // window.confirm(process.env.REACT_APP_FRONTEND_URL);
     // navigate(`${process.env.REACT_APP_FRONTEND_URL}/${space.slug}`, { replace: true });
-    window.location.replace(`${process.env.REACT_APP_FRONTEND_URL}/${space.slug}`);
-
+    window.location.replace(
+      `${process.env.REACT_APP_FRONTEND_URL}/${space.slug}`
+    );
   };
 
   if (loading) return <div className="p-16 text-white">Loading...</div>;
@@ -183,28 +198,38 @@ export default function ProductPage() {
         {/* Sidebar */}
         <aside className="w-64 bg-gray-800 border-r border-gray-600 min-h-screen p-4">
           <div>
-            <h3 className="text-lg font-semibold text-gray-300 mb-2">Filters</h3>
+            <h3 className="text-lg font-semibold text-gray-300 mb-2">
+              Filters
+            </h3>
             <ul className="space-y-2">
               <li
-                className={`p-2 rounded-md cursor-pointer ${filter === "all" ? "bg-gray-700" : "hover:bg-gray-700"}`}
+                className={`p-2 rounded-md cursor-pointer ${
+                  filter === "all" ? "bg-gray-700" : "hover:bg-gray-700"
+                }`}
                 onClick={() => setFilter("all")}
               >
                 All
               </li>
               <li
-                className={`p-2 rounded-md cursor-pointer ${filter === "approved" ? "bg-gray-700" : "hover:bg-gray-700"}`}
+                className={`p-2 rounded-md cursor-pointer ${
+                  filter === "approved" ? "bg-gray-700" : "hover:bg-gray-700"
+                }`}
                 onClick={() => setFilter("approved")}
               >
                 Approved
               </li>
               <li
-                className={`p-2 rounded-md cursor-pointer ${filter === "pending" ? "bg-gray-700" : "hover:bg-gray-700"}`}
+                className={`p-2 rounded-md cursor-pointer ${
+                  filter === "pending" ? "bg-gray-700" : "hover:bg-gray-700"
+                }`}
                 onClick={() => setFilter("pending")}
               >
                 Pending
               </li>
               <li
-                className={`p-2 rounded-md cursor-pointer ${filter === "rejected" ? "bg-gray-700" : "hover:bg-gray-700"}`}
+                className={`p-2 rounded-md cursor-pointer ${
+                  filter === "rejected" ? "bg-gray-700" : "hover:bg-gray-700"
+                }`}
                 onClick={() => setFilter("rejected")}
               >
                 Rejected
@@ -222,7 +247,10 @@ export default function ProductPage() {
           ) : (
             <div className="grid md:grid-cols-2 gap-6">
               {filteredTestimonials.map((t) => (
-                <div key={t._id} className="bg-gray-800 p-6 rounded-lg shadow-md">
+                <div
+                  key={t._id}
+                  className="bg-gray-800 p-6 rounded-lg shadow-md"
+                >
                   <div className="flex items-center space-x-4 mb-4">
                     <img
                       src={
@@ -234,11 +262,15 @@ export default function ProductPage() {
                     />
                     <div>
                       <h4 className="text-lg font-semibold">{t.author.name}</h4>
-                      <p className="text-sm text-gray-400">{t.author.company}</p>
+                      <p className="text-sm text-gray-400">
+                        {t.author.company}
+                      </p>
                     </div>
                   </div>
 
-                  {t.rating && <p className="mb-2 text-yellow-400">⭐ {t.rating}/5</p>}
+                  {t.rating && (
+                    <p className="mb-2 text-yellow-400">⭐ {t.rating}/5</p>
+                  )}
                   <p className="text-gray-300 mb-2">{t.content}</p>
 
                   {t.answers?.length > 0 && (
@@ -298,7 +330,13 @@ export default function ProductPage() {
                   {t.status !== "pending" && (
                     <div className="mt-4 text-sm text-gray-400">
                       Status:{" "}
-                      <span className={t.status === "approved" ? "text-green-400" : "text-red-400"}>
+                      <span
+                        className={
+                          t.status === "approved"
+                            ? "text-green-400"
+                            : "text-red-400"
+                        }
+                      >
                         {t.status}
                       </span>
                     </div>
@@ -319,7 +357,10 @@ export default function ProductPage() {
           )}
 
           <div className="flex justify-center space-x-4 mt-10">
-            <button onClick={handleAddText} className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md">
+            <button
+              onClick={handleAddText}
+              className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md"
+            >
               <span>📝</span>
               <span>Add a Text</span>
             </button>
@@ -328,32 +369,11 @@ export default function ProductPage() {
       </div>
 
       {/* Script Modal */}
-      {showScriptModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-gray-800 p-6 rounded-lg w-96">
-            <h3 className="text-xl font-semibold mb-4">Embed Code</h3>
-            <div className="bg-gray-900 p-4 rounded-md mb-4 overflow-auto">
-              <code className="text-sm text-gray-300 break-words whitespace-pre-wrap">
-                {generateEmbedScript()}
-              </code>
-            </div>
-
-            <div className="flex justify-end space-x-4">
-              <button
-                onClick={() => setShowScriptModal(false)}
-                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded"
-              >
-                Close
-              </button>
-              <button
-                onClick={() => copyToClipboard(generateEmbedScript())}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
-              >
-                Copy
-              </button>
-            </div>
-          </div>
-        </div>
+      {showScriptModal && space && (
+        <GetEmbedCodeModal
+          slug={space.slug}
+          onClose={() => setShowScriptModal(false)}
+        />
       )}
 
       {/* Edit Modal */}
@@ -366,14 +386,29 @@ export default function ProductPage() {
                 onClick={() => setShowEditModal(false)}
                 className="text-gray-400 hover:text-white"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
 
             <div className="p-6">
-              <SpaceForm space={space} onClose={() => setShowEditModal(false)} onUpdate={handleSpaceUpdate} />
+              <SpaceForm
+                space={space}
+                onClose={() => setShowEditModal(false)}
+                onUpdate={handleSpaceUpdate}
+              />
             </div>
           </div>
         </div>

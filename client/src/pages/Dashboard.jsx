@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import SpaceForm from "../components/SpaceForm";
 import MenuButton from "../components/MenuButton";
+import GetEmbedCodeModal from "../components/GetEmbedCodeModal";
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -21,36 +22,43 @@ export default function Dashboard() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [openMenuSpace, setOpenMenuSpace] = useState(null);
   const [stats, setStats] = useState({ total: 0, pending: 0 });
+  const [activeEmbedSlug, setActiveEmbedSlug] = useState(null);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
         const token = await getToken();
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/testimonials/stats`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/testimonials/stats`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            withCredentials: true,
+          }
+        );
         setStats(res.data);
       } catch (error) {
-        console.error('Failed to fetch stats', error);
+        console.error("Failed to fetch stats", error);
       }
     };
 
     fetchStats();
-  }, [userId, getToken]); 
+  }, [userId, getToken]);
   useEffect(() => {
     const fetchSpaces = async () => {
       try {
         const token = await getToken();
         // console.log(token);
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/spaces`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/spaces`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            withCredentials: true,
+          }
+        );
 
         const plainSpaces = response.data.spaces.map((space) => ({
           _id: space._id,
@@ -136,7 +144,8 @@ export default function Dashboard() {
             <h2 className="text-3xl font-semibold">Spaces</h2>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium transition-colors">
+              className="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium transition-colors"
+            >
               + Create Space
             </button>
           </div>
@@ -157,48 +166,50 @@ export default function Dashboard() {
                 <div
                   key={space._id}
                   onClick={() => handleSpaceClick(space._id)}
-                  className="bg-gray-700 p-6 rounded-lg shadow-md space-y-4 cursor-pointer hover:bg-gray-600 transition-colors">
+                  className="bg-gray-700 p-6 rounded-lg shadow-md space-y-4 cursor-pointer hover:bg-gray-600 transition-colors"
+                >
                   <div className="flex justify-between items-center">
                     <p className="font-semibold text-xl">{space.name}</p>
-                    {/* <button
-                      className="text-gray-400 hover:text-white p-1 rounded-full hover:bg-gray-500 transition-colors"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        // Add dropdown menu functionality here
-                      }}>
-                      ⋮
-                    </button> */}
                     <MenuButton
                       spaceData={space}
                       isOpen={openMenuSpace === space.name}
                       onToggle={(name) => setOpenMenuSpace(name)}
                       onUpdateSuccess={(updatedSpace) => {
                         setSpaces((prev) =>
-                          prev.map((s) => (s._id === updatedSpace._id ? updatedSpace : s))
+                          prev.map((s) =>
+                            s._id === updatedSpace._id ? updatedSpace : s
+                          )
                         );
                       }}
                       onDeleteSuccess={(deletedId) => {
-                        setSpaces((prev) => prev.filter((s) => s._id !== deletedId));
+                        setSpaces((prev) =>
+                          prev.filter((s) => s._id !== deletedId)
+                        );
                       }}
                     />
                   </div>
 
                   <div>
-                    <p className="text-gray-300 mb-1">Type: {space.collectionType}</p>
-                    <p className="text-gray-300">Created: {formatDate(space.createdAt)}</p>
+                    <p className="text-gray-300 mb-1">
+                      Type: {space.collectionType}
+                    </p>
+                    <p className="text-gray-300">
+                      Created: {formatDate(space.createdAt)}
+                    </p>
                   </div>
 
-                  {/* <div className="pt-2 border-t border-gray-600 flex justify-between items-center"> */}
-                    {/* <span className="text-gray-300">0 testimonials</span> */}
-                    {/* <button
-                      className="text-blue-400 hover:text-blue-300 font-medium"
+                  <div className="pt-2 border-t border-gray-600 flex justify-between items-center">
+                    {/* Add Get Embed Code space-level here */}
+                    <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        // Add view testimonials functionality
-                      }}>
-                      View
-                    </button> */}
-                  {/* </div> */}
+                        setActiveEmbedSlug(space.slug);
+                      }}
+                      className="text-blue-400 underline hover:text-blue-500"
+                    >
+                      Get Embed Code
+                    </button>
+                  </div>
                 </div>
               ))
             ) : (
@@ -220,8 +231,19 @@ export default function Dashboard() {
                 onClick={() => setShowCreateModal(false)}
                 className="text-gray-400 hover:text-white"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
@@ -231,6 +253,12 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+      )}
+      {activeEmbedSlug && (
+        <GetEmbedCodeModal
+          slug={activeEmbedSlug}
+          onClose={() => setActiveEmbedSlug(null)}
+        />
       )}
     </div>
   );

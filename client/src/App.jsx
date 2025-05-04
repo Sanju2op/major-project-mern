@@ -29,9 +29,9 @@ function App() {
           <Route path="/embed/space/:slug" element={<EmbedSpace />} />
           <Route path="/embed/testimonial/:id" element={<EmbedTestimonial />} />
 
-          {/* <Route path="/:slug" element={<SpacePage />} /> */}
+          <Route path="/:slug" element={<SpacePage />} />
           {/* 404 fallback */}
-          {/* <Route path="*" element={<NotFound />} /> */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </ClerkProvider>
