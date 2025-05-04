@@ -5,6 +5,7 @@ import SpaceForm from "../components/SpaceForm";
 import axios from "axios";
 import { FaTwitter, FaInstagram, FaCode } from "react-icons/fa";
 import GetEmbedCodeModal from "../components/GetEmbedCodeModal";
+import GetSingleEmbedCodeModal from "../components/GetSingleEmbedCodeModal";
 
 export default function ProductPage() {
   const { isLoaded, getToken } = useAuth();
@@ -15,7 +16,7 @@ export default function ProductPage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showScriptModal, setShowScriptModal] = useState(false);
   const [filter, setFilter] = useState("all");
-  // const navigate = useNavigate();
+  const [activeTestimonialId, setActiveTestimonialId] = useState(null);
 
   useEffect(() => {
     const fetchSpace = async () => {
@@ -137,7 +138,6 @@ export default function ProductPage() {
       );
     }
   };
-
 
   const filteredTestimonials = testimonials.filter((t) => {
     if (filter === "all") return true;
@@ -311,6 +311,22 @@ export default function ProductPage() {
                   )}
 
                   {/* Moderation buttons */}
+                  {/* {t.status === "pending" && (
+                    <div className="mt-4 flex space-x-4">
+                      <button
+                        onClick={() => handleApprove(t._id)}
+                        className="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded"
+                      >
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => handleReject(t._id)}
+                        className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded"
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  )} */}
                   {t.status === "pending" && (
                     <div className="mt-4 flex space-x-4">
                       <button
@@ -327,6 +343,18 @@ export default function ProductPage() {
                       </button>
                     </div>
                   )}
+
+                  {t.status === "approved" && (
+                    <div className="mt-4">
+                      <button
+                        onClick={() => setActiveTestimonialId(t._id)}
+                        className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded"
+                      >
+                        Get Embed Code
+                      </button>
+                    </div>
+                  )}
+
                   {t.status !== "pending" && (
                     <div className="mt-4 text-sm text-gray-400">
                       Status:{" "}
@@ -412,6 +440,12 @@ export default function ProductPage() {
             </div>
           </div>
         </div>
+      )}
+      {activeTestimonialId && (
+        <GetSingleEmbedCodeModal
+          testimonialId={activeTestimonialId}
+          onClose={() => setActiveTestimonialId(null)}
+        />
       )}
     </div>
   );
