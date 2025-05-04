@@ -20,14 +20,31 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [openMenuSpace, setOpenMenuSpace] = useState(null);
+  const [stats, setStats] = useState({ total: 0, pending: 0 });
 
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const token = await getToken();
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/testimonials/stats`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        });
+        setStats(res.data);
+      } catch (error) {
+        console.error('Failed to fetch stats', error);
+      }
+    };
 
+    fetchStats();
+  }, [userId, getToken]); 
   useEffect(() => {
     const fetchSpaces = async () => {
       try {
         const token = await getToken();
         // console.log(token);
-
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/spaces`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -104,11 +121,11 @@ export default function Dashboard() {
             </div>
             <div className="bg-gray-700 p-6 rounded-lg shadow-md">
               <p className="text-gray-300 mb-2">Total Testimonials</p>
-              <p className="text-3xl font-bold">0</p>
+              <p className="text-3xl font-bold">{stats.total}</p>
             </div>
             <div className="bg-gray-700 p-6 rounded-lg shadow-md">
               <p className="text-gray-300 mb-2">Pending Approvals</p>
-              <p className="text-3xl font-bold">0</p>
+              <p className="text-3xl font-bold">{stats.pending}</p>
             </div>
           </div>
         </section>
@@ -171,8 +188,8 @@ export default function Dashboard() {
                     <p className="text-gray-300">Created: {formatDate(space.createdAt)}</p>
                   </div>
 
-                  <div className="pt-2 border-t border-gray-600 flex justify-between items-center">
-                    <span className="text-gray-300">0 testimonials</span>
+                  {/* <div className="pt-2 border-t border-gray-600 flex justify-between items-center"> */}
+                    {/* <span className="text-gray-300">0 testimonials</span> */}
                     {/* <button
                       className="text-blue-400 hover:text-blue-300 font-medium"
                       onClick={(e) => {
@@ -181,7 +198,7 @@ export default function Dashboard() {
                       }}>
                       View
                     </button> */}
-                  </div>
+                  {/* </div> */}
                 </div>
               ))
             ) : (

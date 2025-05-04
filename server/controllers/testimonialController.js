@@ -145,3 +145,22 @@ export const deleteTestimonial = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+export const getStats = async (req, res) => {
+  const { userId } = req.auth;
+
+  try {
+    // Find all spaceIds owned by this user
+    const userSpaces = await Space.find({ userId }, '_id');
+    const spaceIds = userSpaces.map(space => space._id);
+
+    const total = await Testimonial.countDocuments({ spaceId: { $in: spaceIds } });
+    const pending = await Testimonial.countDocuments({ spaceId: { $in: spaceIds }, status: 'pending' });
+
+    res.json({ total, pending });
+  } catch (err) {
+    console.error("Stats error:", err);
+    res.status(500).json({ error: "Failed to get stats" });
+  }
+};
+

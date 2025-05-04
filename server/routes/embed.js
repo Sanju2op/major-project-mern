@@ -1,60 +1,47 @@
-const express = require("express");
+import express from "express";
+import Space from "../models/Space.js";
+import Testimonial from "../models/Testimonial.js";
+
 const router = express.Router();
-const Space = require("../models/Space");
-const Testimonial = require("../models/Testimonial");
 
-// Get embed iframe for a space
-router.get("/:spaceId", async (req, res) => {
+// GET /api/embed/space/:slug - Get approved testimonials for a space
+router.get("/space/:slug", async (req, res) => {
   try {
-    const space = await Space.findById(req.params.spaceId);
+    const space = await Space.findOne({ slug: req.params.slug });
+
     if (!space) {
-      return res.status(404).send("Space not found");
+      return res.status(404).json({ error: "Space not found" });
     }
 
-    // Get approved testimonials for the space
     const testimonials = await Testimonial.find({
-      space: req.params.spaceId,
+      spaceId: space._id,
       status: "approved",
-    }).populate("author");
+    }).sort({ createdAt: -1 });
 
-    // Generate the embed iframe
-    const iframe = `
-      <iframe src="${req.protocol}://${req.get("host")}/api/embed/${
-      space._id
-    }/iframe" width="600" height="400" frameborder="0" allowfullscreen></iframe>
-    `;
-
-    res.setHeader("Content-Type", "text/html");
-    res.send(iframe);
-  } catch (error) {
-    console.error("Error generating embed iframe:", error);
-    res.status(500).send("Error generating embed iframe");
+    res.json({ space, testimonials });
+  } catch (err) {
+    console.error("Error fetching embedded space:", err);
+    res.status(500).json({ error: "Server error" });
   }
 });
 
-// Get embed iframe for a single testimonial
-router.get("/testimonial/:testimonialId", async (req, res) => {
+// GET /api/embed/testimonial/:id - Get a single testimonial
+router.get("/testimonial/:id", async (req, res) => {
   try {
-    const testimonial = await Testimonial.findById(
-      req.params.testimonialId
-    ).populate("author");
-    if (!testimonial || testimonial.status !== "approved") {
-      return res.status(404).send("Testimonial not found or not approved");
+    const testimonial = await Testimonial.findOne({
+      _id: req.params.id,
+      status: "approved",
+    });
+
+    if (!testimonial) {
+      return res.status(404).json({ error: "Testimonial not found" });
     }
 
-    // Generate the embed iframe for a single testimonial
-    const iframe = `
-      <iframe src="${req.protocol}://${req.get("host")}/api/embed/testimonial/${
-      testimonial._id
-    }/iframe" width="600" height="400" frameborder="0" allowfullscreen></iframe>
-    `;
-
-    res.setHeader("Content-Type", "text/html");
-    res.send(iframe);
-  } catch (error) {
-    console.error("Error generating embed iframe for testimonial:", error);
-    res.status(500).send("Error generating embed iframe for testimonial");
+    res.json({ testimonial });
+  } catch (err) {
+    console.error("Error fetching embedded testimonial:", err);
+    res.status(500).json({ error: "Server error" });
   }
 });
 
-module.exports = router;
+export default router;

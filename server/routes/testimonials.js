@@ -1,16 +1,14 @@
 import express from "express";
 import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
-// import {
-//   submitTestimonial,
-//   getSpaceTestimonials, // 👈 Import the new controller
-// } from "../controllers/testimonialController.js";
 import {
   submitTestimonial,
   getSpaceTestimonials,
   approveTestimonial,
   rejectTestimonial,
   deleteTestimonial,
+  getStats,
 } from "../controllers/testimonialController.js";
+
 
 const router = express.Router();
 const requireAuth = ClerkExpressRequireAuth({});
@@ -29,5 +27,8 @@ router.patch("/:testimonialId/reject", requireAuth, rejectTestimonial);
 
 // Delete testimonial
 router.delete("/:testimonialId", requireAuth, deleteTestimonial);
+
+// Get total testimonials and pending approvals
+router.get("/stats", requireAuth, getStats);
 
 export default router;

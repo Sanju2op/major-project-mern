@@ -9,7 +9,9 @@ import SyncUser from "./components/SyncUser";
 import ProductPage from "./pages/ProductPage";
 import SpacePage from "./pages/SpacePage";
 import NotFound from "./pages/NotFound";
-import EmbedPage from "./pages/EmbedPage";
+import EmbedSpace from "./pages/EmbedSpace";
+import EmbedTestimonial from "./pages/EmbedTestimonial";
+
 
 const clerkFrontendApi = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
 
@@ -24,10 +26,12 @@ function App() {
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/signup/*" element={<SignUpPage />} />
           <Route path="/products/:spaceName" element={<ProductPage />} />
-          <Route path="/:slug" element={<SpacePage />} />
-          <Route path="/embed/:spaceId/iframe" element={<EmbedPage />} />
+          <Route path="/embed/space/:slug" element={<EmbedSpace />} />
+          <Route path="/embed/testimonial/:id" element={<EmbedTestimonial />} />
+
+          {/* <Route path="/:slug" element={<SpacePage />} /> */}
           {/* 404 fallback */}
-          <Route path="*" element={<NotFound />} />
+          {/* <Route path="*" element={<NotFound />} /> */}
         </Routes>
       </Router>
     </ClerkProvider>

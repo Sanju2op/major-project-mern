@@ -5,6 +5,7 @@ import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import spaceRoutes from "./routes/spaceRoutes.js";
 import testimonialRoutes from "./routes/testimonials.js";
+import embedRoutes from "./routes/embed.js";
 
 dotenv.config();
 const app = express();
@@ -24,6 +25,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/spaces", spaceRoutes);
 app.use("/api/testimonials", testimonialRoutes); // ✅ add this line
+app.use("/api/embed", embedRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
