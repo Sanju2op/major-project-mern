@@ -5,12 +5,12 @@ import axios from "axios";
 const EmbedTestimonial = () => {
   const { id } = useParams();
   const [testimonialData, setTestimonialData] = useState(null);
-
+  const api = process.env.REACT_APP_API_URL;
   useEffect(() => {
     const fetchTestimonial = async () => {
       try {
         const res = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/embed/testimonial/${id}`
+          `${api}/api/embed/testimonial/${id}`
         );
         setTestimonialData(res.data.testimonial);
       } catch (err) {
