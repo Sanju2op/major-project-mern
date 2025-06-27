@@ -11,7 +11,13 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://major-project-mern.vercel.app"
+];
+app.use(cors({ origin: allowedOrigins, credentials: true }));
+// app.use(cors({ origin: "https://major-project-mern.vercel.app", credentials: true }));
+
 app.use(express.json());
 
 // Connect to MongoDB
