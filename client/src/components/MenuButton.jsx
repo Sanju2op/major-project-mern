@@ -33,7 +33,7 @@ export default function MenuButton({ spaceData, isOpen, onToggle, onUpdateSucces
   };
 
   const handleCopyLink = () => {
-    const fullUrl = `http://localhost:3000/${spaceData.slug}`;
+    const fullUrl = `${process.env.REACT_APP_API_URL}/${spaceData.slug}`;
     navigator.clipboard.writeText(fullUrl)
       .then(() => {
         alert("Link copied to clipboard!");
