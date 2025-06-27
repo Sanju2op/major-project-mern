@@ -64,7 +64,7 @@ export default function SpacePage() {
     e.preventDefault();
 
     try {
-      await axios.post(`http://localhost:5000/api/testimonials/${space.slug}`, form);
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/testimonials/${space.slug}`, form);
       setSuccess(true);
       setShowForm(false); // Optional: hide form after submission
     } catch (error) {
