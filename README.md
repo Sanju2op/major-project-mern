@@ -1,4 +1,7 @@
 # Testimonials App
+<a href="https://major-project-mern.vercel.app"> Live Project Link</a>
+
+<a href="https://major-project-mern.vercel.app/project-testimonial">Drop a Testimonial for this project thanks</a>
 
 A full-stack MERN + Clerk application for collecting and managing testimonials.
 
