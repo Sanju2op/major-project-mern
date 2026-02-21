@@ -20,7 +20,7 @@ const EmbedTestimonial = () => {
     };
 
     fetchTestimonial();
-  }, [id]);
+  }, [id, api]);
 
   if (!testimonialData) return <p>Loading...</p>;
   if (testimonialData.error) return <p>{testimonialData.error}</p>;
