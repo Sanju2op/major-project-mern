@@ -1,6 +1,6 @@
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
-import heroImage from "../assets/hero-image.png"; // make sure the image exists here
+import heroImage from "../assets/hero-image.png";
 
 export default function LandingPage() {
   return (
@@ -32,7 +32,7 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <main className="flex flex-1 items-center justify-center px-6">
+      <main className="flex flex-1 items-center justify-center px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl w-full">
           {/* Left Side - Image */}
           <div className="flex justify-center">
@@ -60,6 +60,53 @@ export default function LandingPage() {
           </div>
         </div>
       </main>
+
+      {/* ===================== */}
+      {/* Testimonials Section */}
+      {/* ===================== */}
+
+      <section className="bg-white py-20 px-6">
+        <div className="max-w-6xl mx-auto space-y-16">
+
+          {/* Section Heading */}
+          <div className="text-center">
+            <h2 className="text-4xl font-bold text-black">
+              Loved by Our Customers
+            </h2>
+            <p className="text-gray-600 mt-3 text-lg">
+              See what people are saying about us.
+            </p>
+          </div>
+
+          {/* Featured Testimonial */}
+          <div className="shadow-xl rounded-lg overflow-hidden">
+            <iframe
+              src="https://major-project-mern.vercel.app/embed/testimonial/699960395590d79cff67a322"
+              width="100%"
+              height="500"
+              frameBorder="0"
+              title="Featured Testimonial"
+            />
+          </div>
+
+          {/* All Testimonials */}
+          <div>
+            <h3 className="text-3xl font-semibold text-center mb-6">
+              More Testimonials
+            </h3>
+            <div className="shadow-xl rounded-lg overflow-hidden">
+              <iframe
+                src="https://major-project-mern.vercel.app/embed/space/project-testimonial"
+                width="100%"
+                height="600"
+                frameBorder="0"
+                title="All Testimonials"
+              />
+            </div>
+          </div>
+
+        </div>
+      </section>
     </div>
   );
 }
